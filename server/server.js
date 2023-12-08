@@ -6,6 +6,8 @@ const { authMiddleware } = require('./utils/auth');
 
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
+const auth = require('./utils/auth');
+const { graphql } = require('graphql');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -20,7 +22,7 @@ const startApolloServer = async () => {
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
-
+  app.use('/grapgql', authMiddleware, graphql({ schema, graphiql: true}))
   app.use('/graphql', expressMiddleware(server, {
     context: authMiddleware
   }));
